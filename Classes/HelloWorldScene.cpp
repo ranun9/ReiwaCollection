@@ -74,10 +74,11 @@ bool HelloWorld::init()
 
 	//create Wall
 	auto node = DrawNode::create();
+	auto wallBorder = 1919;//壁の厚さ。すり抜けないよう厚めに
 	node->setName("Wall");
 	node->drawRect(Vec2(0, 0), Vec2(visibleSize.width, visibleSize.height), Color4F::WHITE);
 	this->addChild(node);
-	auto physicsBody=PhysicsBody::createEdgeBox(Size(visibleSize.width, visibleSize.height));
+	auto physicsBody=PhysicsBody::createEdgeBox(Size(visibleSize.width+wallBorder*2, visibleSize.height+wallBorder*2),PHYSICSBODY_MATERIAL_DEFAULT, wallBorder,Vec2::ZERO);
 	physicsBody->setDynamic(false);
 	physicsBody->setPositionOffset(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	physicsBody->getPosition();
@@ -118,7 +119,9 @@ void HelloWorld::initEvents()
 		//onTouchBegan は必須らしい
 	};
 	touchListener->onTouchMoved = [this](Touch* touch, Event* event) {
-		player->setPosition(player->getPosition() + touch->getDelta());
+		playerPhysics->applyImpulse(touch->getDelta()*100);
+		//log(('x' + std::to_string(touch->getDelta().x) + (" y" + std::to_string(touch->getDelta().y))).c_str());
+		//touch-> getStartLocationとか？を利用で押しっぱなしでも動くようにしたい
 	};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, this);
 }
