@@ -15,6 +15,8 @@ Scene* HelloWorld::createScene()
 	auto world = scene->getPhysicsWorld();
 	world->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);
 
+	world->setGravity(Vec2::ZERO);
+
 	auto layer = HelloWorld::create();
 	scene->addChild(layer);
 
@@ -71,6 +73,7 @@ bool HelloWorld::init()
 
     /////////////////////////////
     // 3. add your codes below...
+	HelloWorld::initEvents();
 
 	//create Wall
 	auto node = DrawNode::create();
@@ -78,11 +81,14 @@ bool HelloWorld::init()
 	node->setName("Wall");
 	node->drawRect(Vec2(0, 0), Vec2(visibleSize.width, visibleSize.height), Color4F::WHITE);
 	this->addChild(node);
-	auto physicsBody=PhysicsBody::createEdgeBox(Size(visibleSize.width+wallBorder*2, visibleSize.height+wallBorder*2),PHYSICSBODY_MATERIAL_DEFAULT, wallBorder,Vec2::ZERO);
+	auto physicsBody=PhysicsBody::createEdgeBox(Size(visibleSize.width+wallBorder*2, visibleSize.height+wallBorder*2), PhysicsMaterial(0, 1, 0), wallBorder,Vec2::ZERO);
 	physicsBody->setDynamic(false);
 	physicsBody->setPositionOffset(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	physicsBody->getPosition();
 	node->addComponent(physicsBody);
+
+	int categoryPlayer = 1;
+	int categoryItem = 1 << 1;
 
 	//create Player
 	player = Sprite::create("pose_sagasu_kyorokyoro_man.png");
@@ -90,9 +96,30 @@ bool HelloWorld::init()
 	player->setScale(0.3);
 	this->addChild(player);
 	playerPhysics = PhysicsBody::createBox(Size(100,100));
-	player->addComponent(playerPhysics);	
+	playerPhysics->setRotationEnable(false);//回転すると移動の向きが変わるので
+	playerPhysics->setCategoryBitmask(1);
+	playerPhysics->setCollisionBitmask(1);
+	playerPhysics->setContactTestBitmask(1);
+	player->addComponent(playerPhysics);
+	
 
-	HelloWorld::initEvents();
+	//crate Items
+	Vector<Sprite*> Items;
+	Items.pushBack(Sprite::create("hiragana_72_re.png"));
+	Items.pushBack(Sprite::create("hiragana_02_i.png"));
+	Items.pushBack(Sprite::create("hiragana_74_wa.png"));
+	for (int i = 0; i < Items.size();i++) {
+		ItemsPhysics.pushBack(PhysicsBody::createBox(Size(110, 103), PhysicsMaterial(1e-4,1,0)));
+		ItemsPhysics.at(i)->setCategoryBitmask(1);
+		ItemsPhysics.at(i)->setCollisionBitmask(1);
+		ItemsPhysics.at(i)->setContactTestBitmask(1);//↑と両方のsetContactTestBitmask(2)にしただけですり抜けなくなる謎
+		ItemsPhysics.at(i)->setTag(1919);//アイテム
+		Items.at(i)->setPosition(Vec2(random<int>(0,visibleSize.width), random<int>(0,visibleSize.height)));
+		this->addChild(Items.at(i));
+		Items.at(i)->addComponent(ItemsPhysics.at(i));
+	}
+
+	this->scheduleUpdate();
 
     return true;
 }
@@ -122,6 +149,34 @@ void HelloWorld::initEvents()
 		playerPhysics->applyImpulse(touch->getDelta()*100);
 		//log(('x' + std::to_string(touch->getDelta().x) + (" y" + std::to_string(touch->getDelta().y))).c_str());
 		//touch-> getStartLocationとか？を利用で押しっぱなしでも動くようにしたい
+		//playerPhysics->applyImpulse(touch->getLocation() - touch->getStartLocation() * 10, Vec2::ANCHOR_MIDDLE);
+		
+		//playerPhysics->setVelocity(touch->getDelta());
+		//playerPhysics->applyForce(playerPhysics->getVelocity());
 	};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, this);
+
+	auto physicsListener = EventListenerPhysicsContact::create();
+	physicsListener->onContactBegin = [](PhysicsContact& contact) -> bool {
+		auto nodeA = contact.getShapeA()->getBody()->getNode();
+		auto nodeB = contact.getShapeB()->getBody()->getNode();
+
+		if (1919 == nodeA->getTag()) {
+			nodeA->removeFromParent();
+			return true;
+		}
+		else if(1919 == nodeB->getTag())
+		{
+			nodeB->removeFromParent();
+			return true;
+		}
+		return false;
+	};
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(physicsListener, this);
+}
+
+void HelloWorld::update(float frame) {
+	for (auto e : ItemsPhysics) {
+		e->applyImpulse(Vec2(random(0,1), random(0,1)));
+	}
 }
