@@ -1,5 +1,6 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
+#include "Finished/FinishedScene.h"
 
 USING_NS_CC;
 
@@ -101,6 +102,7 @@ bool HelloWorld::init()
 	playerPhysics = PhysicsBody::createBox(Size(100,100));
 	playerPhysics->setRotationEnable(false);//‰ñ“]‚·‚é‚ÆˆÚ“®‚ÌŒü‚«‚ª•Ï‚í‚é‚Ì‚Å
 	playerPhysics->setContactTestBitmask(1);
+	playerPhysics->setName("Player");
 	player->addComponent(playerPhysics);
 	
 
@@ -109,9 +111,13 @@ bool HelloWorld::init()
 	Items.pushBack(Sprite::create("hiragana_72_re.png"));
 	Items.pushBack(Sprite::create("hiragana_02_i.png"));
 	Items.pushBack(Sprite::create("hiragana_74_wa.png"));
+	nextNeedItems.push_back("‚ê");
+	nextNeedItems.push_back("‚¢");
+	nextNeedItems.push_back("‚í");
+	it = nextNeedItems.begin();
 	for (int i = 0; i < Items.size();i++) {
 		ItemsPhysics.pushBack(PhysicsBody::createBox(Size(110, 103), PhysicsMaterial(1e-4,1,0)));
-		ItemsPhysics.at(i)->setName("Item");
+		ItemsPhysics.at(i)->setName(nextNeedItems.at(i));
 		ItemsPhysics.at(i)->setContactTestBitmask(1);
 		Items.at(i)->setPosition(Vec2(random<int>(0,visibleSize.width), random<int>(0,visibleSize.height)));
 		this->addChild(Items.at(i));
@@ -154,17 +160,24 @@ void HelloWorld::initEvents()
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, this);
 
 	auto contactListener = EventListenerPhysicsContact::create();
-	contactListener->onContactBegin = [](PhysicsContact &contact) -> bool {
+	contactListener->onContactBegin = [&](PhysicsContact &contact) -> bool {
 		auto bodyA = contact.getShapeA()->getBody();
 		auto bodyB = contact.getShapeB()->getBody();
 
-		if ("Item" == bodyA->getName())
-		{
-			bodyA->getNode()->removeFromParent();
-		} else if ("Item" == bodyB->getName())
+		if ("Player" == bodyA->getName() && *it == bodyB->getName())
 		{
 			bodyB->getNode()->removeFromParent();
+			it++;
+		} else if ("Player" == bodyB->getName() && *it == bodyA->getName())
+		{
+			bodyA->getNode()->removeFromParent();
+			it++;
 		}
+
+		if (it == nextNeedItems.end()) {
+			Director::getInstance()->replaceScene(Finished::createScene());
+		}
+
 		return true;
 	};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);

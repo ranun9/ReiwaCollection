@@ -10,6 +10,12 @@
     <Filter Include="src">
       <UniqueIdentifier>{bb6c862e-70e9-49d9-81b7-3829a6f50471}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Title">
+      <UniqueIdentifier>{dd2f72e5-e428-4035-bee6-4dda164253d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Finished">
+      <UniqueIdentifier>{d76b3d52-5e63-48d3-bcce-bfd4e51fcd27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -21,6 +27,12 @@
     <ClCompile Include="..\Classes\HelloWorldScene.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\Classes\Title\TitleScene.cpp">
+      <Filter>src\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\Finished\FinishedScene.cpp">
+      <Filter>src\Finished</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main.h">
@@ -31,6 +43,12 @@
     </ClInclude>
     <ClInclude Include="..\Classes\HelloWorldScene.h">
       <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Title\TitleScene.h">
+      <Filter>src\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\Finished\FinishedScene.h">
+      <Filter>src\Finished</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

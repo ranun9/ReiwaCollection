@@ -19,7 +19,10 @@ public:
 
 	cocos2d::Sprite *player;
 	cocos2d::PhysicsBody *playerPhysics;
-	cocos2d::Vector<cocos2d::PhysicsBody*> ItemsPhysics;
+	cocos2d::Vector<cocos2d::PhysicsBody*> ItemsPhysics;//std::vectorÇæÇ∆HelloWorld::updateÇ≈Ç ÇÈÇ€ÅH
+
+	std::vector<std::string> nextNeedItems;
+	std::vector<std::string>::iterator it;
 
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
