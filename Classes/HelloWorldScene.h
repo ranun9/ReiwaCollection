@@ -20,7 +20,7 @@ public:
 	cocos2d::Sprite *player;
 	cocos2d::PhysicsBody *playerPhysics;
 	cocos2d::Vector<cocos2d::PhysicsBody*> ItemsPhysics;
-    
+
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 };

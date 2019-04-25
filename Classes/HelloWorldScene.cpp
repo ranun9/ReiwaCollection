@@ -87,8 +87,11 @@ bool HelloWorld::init()
 	physicsBody->getPosition();
 	node->addComponent(physicsBody);
 
+	//setCollisionBitmask()ÇÁÇà”ê}ÇµÇΩãììÆÇ≈àµÇ¶Ç»Ç©Ç¡ÇΩÇÃÇ≈ífîO
+	/*
 	int categoryPlayer = 1;
-	int categoryItem = 1 << 1;
+	int categoryItem = 1;
+	*/
 
 	//create Player
 	player = Sprite::create("pose_sagasu_kyorokyoro_man.png");
@@ -97,8 +100,6 @@ bool HelloWorld::init()
 	this->addChild(player);
 	playerPhysics = PhysicsBody::createBox(Size(100,100));
 	playerPhysics->setRotationEnable(false);//âÒì]Ç∑ÇÈÇ∆à⁄ìÆÇÃå¸Ç´Ç™ïœÇÌÇÈÇÃÇ≈
-	playerPhysics->setCategoryBitmask(1);
-	playerPhysics->setCollisionBitmask(1);
 	playerPhysics->setContactTestBitmask(1);
 	player->addComponent(playerPhysics);
 	
@@ -110,10 +111,8 @@ bool HelloWorld::init()
 	Items.pushBack(Sprite::create("hiragana_74_wa.png"));
 	for (int i = 0; i < Items.size();i++) {
 		ItemsPhysics.pushBack(PhysicsBody::createBox(Size(110, 103), PhysicsMaterial(1e-4,1,0)));
-		ItemsPhysics.at(i)->setCategoryBitmask(1);
-		ItemsPhysics.at(i)->setCollisionBitmask(1);
-		ItemsPhysics.at(i)->setContactTestBitmask(1);//Å™Ç∆óºï˚ÇÃsetContactTestBitmask(2)Ç…ÇµÇΩÇæÇØÇ≈Ç∑ÇËî≤ÇØÇ»Ç≠Ç»ÇÈì‰
-		ItemsPhysics.at(i)->setTag(1919);//ÉAÉCÉeÉÄ
+		ItemsPhysics.at(i)->setName("Item");
+		ItemsPhysics.at(i)->setContactTestBitmask(1);
 		Items.at(i)->setPosition(Vec2(random<int>(0,visibleSize.width), random<int>(0,visibleSize.height)));
 		this->addChild(Items.at(i));
 		Items.at(i)->addComponent(ItemsPhysics.at(i));
@@ -133,8 +132,6 @@ void HelloWorld::menuCloseCallback(Ref* pSender)
 
     //EventCustom customEndEvent("game_scene_close_event");
     //_eventDispatcher->dispatchEvent(&customEndEvent);
-
-
 }
 
 void HelloWorld::initEvents()
@@ -156,23 +153,21 @@ void HelloWorld::initEvents()
 	};
 	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(touchListener, this);
 
-	auto physicsListener = EventListenerPhysicsContact::create();
-	physicsListener->onContactBegin = [](PhysicsContact& contact) -> bool {
-		auto nodeA = contact.getShapeA()->getBody()->getNode();
-		auto nodeB = contact.getShapeB()->getBody()->getNode();
+	auto contactListener = EventListenerPhysicsContact::create();
+	contactListener->onContactBegin = [](PhysicsContact &contact) -> bool {
+		auto bodyA = contact.getShapeA()->getBody();
+		auto bodyB = contact.getShapeB()->getBody();
 
-		if (1919 == nodeA->getTag()) {
-			nodeA->removeFromParent();
-			return true;
-		}
-		else if(1919 == nodeB->getTag())
+		if ("Item" == bodyA->getName())
 		{
-			nodeB->removeFromParent();
-			return true;
+			bodyA->getNode()->removeFromParent();
+		} else if ("Item" == bodyB->getName())
+		{
+			bodyB->getNode()->removeFromParent();
 		}
-		return false;
+		return true;
 	};
-	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(physicsListener, this);
+	this->getEventDispatcher()->addEventListenerWithSceneGraphPriority(contactListener, this);
 }
 
 void HelloWorld::update(float frame) {
