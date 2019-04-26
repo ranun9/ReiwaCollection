@@ -1,6 +1,7 @@
 import org.gradle.internal.os.OperatingSystem
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion PROP_COMPILE_SDK_VERSION.toInteger()
@@ -23,15 +24,13 @@ android {
                                         project.file("../../cocos2d/cocos").absolutePath,
                                         project.file("../../cocos2d/external").absolutePath]
                     if (OperatingSystem.current().isWindows()) {
-                        module_paths = module_paths.collect {it.replaceAll('\\\\', '/')}
+                        module_paths = module_paths.collect { it.replaceAll('\\\\', '/') }
                         arguments 'NDK_MODULE_PATH=' + module_paths.join(";")
-                    }
-                    else {
+                    } else {
                         arguments 'NDK_MODULE_PATH=' + module_paths.join(':')
                     }
                 }
-            }
-            else if (PROP_BUILD_TYPE == 'cmake') {
+            } else if (PROP_BUILD_TYPE == 'cmake') {
                 cmake {
                     targets 'MyGame'
                     arguments "-DCMAKE_FIND_ROOT_PATH=", "-DANDROID_STL=c++_static", "-DANDROID_TOOLCHAIN=clang", "-DANDROID_ARM_NEON=TRUE"
@@ -42,7 +41,7 @@ android {
 
         ndk {
             abiFilters = []
-            abiFilters.addAll(PROP_APP_ABI.split(':').collect{it as String})
+            abiFilters.addAll(PROP_APP_ABI.split(':').collect { it as String })
         }
     }
 
@@ -58,8 +57,7 @@ android {
             ndkBuild {
                 path "jni/Android.mk"
             }
-        }
-        else if (PROP_BUILD_TYPE == 'cmake') {
+        } else if (PROP_BUILD_TYPE == 'cmake') {
             cmake {
                 path "../../CMakeLists.txt"
             }
@@ -68,7 +66,7 @@ android {
 
     signingConfigs {
 
-       release {
+        release {
             if (project.hasProperty("RELEASE_STORE_FILE")) {
                 storeFile file(RELEASE_STORE_FILE)
                 storePassword RELEASE_STORE_PASSWORD
@@ -126,4 +124,5 @@ android.applicationVariants.all { variant ->
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':libcocos2dx')
+    implementation 'com.google.firebase:firebase-ads:17.0.0'
 }
