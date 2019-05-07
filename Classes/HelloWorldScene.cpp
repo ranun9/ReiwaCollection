@@ -138,25 +138,6 @@ bool HelloWorld::init()
 		Items.at(i)->addComponent(ItemsPhysics.at(i));
 	}
 
-	// General scene setup ...
-
-	#if defined(__ANDROID__)
-		// Android ad unit IDs.
-		const char* kBannerAdUnit = "ca-app-pub-3940256099942544/6300978111";
-	#else
-		// iOS ad unit IDs.
-	  const char* kBannerAdUnit = "ca-app-pub-3940256099942544/2934735716";
-	#endif
-
-	// Create and initialize banner view.
-	//firebase::admob::BannerView* banner_view;
-	banner_view = new firebase::admob::BannerView();
-	firebase::admob::AdSize ad_size;
-	ad_size.ad_size_type = firebase::admob::kAdSizeStandard;
-	ad_size.width = 320;
-	ad_size.height = 50;
-	banner_view->Initialize(getAdParent(), kBannerAdUnit, ad_size);
-
 	this->scheduleUpdate();
 
     return true;
@@ -219,19 +200,5 @@ void HelloWorld::initEvents()
 void HelloWorld::update(float frame) {
 	for (auto e : ItemsPhysics) {
 		e->applyImpulse(Vec2(random(0,1), random(0,1)));
-	}
-
-	// Check that the banner has been initialized.
-	if (banner_view->InitializeLastResult().status() ==
-		firebase::kFutureStatusComplete) {
-		// Check that the banner hasn't started loading.
-		if (banner_view->LoadAdLastResult().status() ==
-			firebase::kFutureStatusInvalid) {
-			// Make the banner visible and load an ad.
-			CCLOG("Loading a banner.");
-			banner_view->Show();
-			firebase::admob::AdRequest my_ad_request = {};
-			banner_view->LoadAd(my_ad_request);
-		}
 	}
 }
