@@ -25,6 +25,8 @@
 #include "AppDelegate.h"
 #include "HelloWorldScene.h"
 #include "Title/TitleScene.h"
+#include "firebase/app.h"
+#include "firebase/admob.h"
 
 // #define USE_AUDIO_ENGINE 1
 // #define USE_SIMPLE_AUDIO_ENGINE 1
@@ -100,6 +102,22 @@ bool AppDelegate::applicationDidFinishLaunching() {
     director->setContentScaleFactor(MIN(frameSize.height/designResolutionSize.height, frameSize.width/designResolutionSize.width));
 
     register_all_packages();
+
+
+    #if (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+        // Initialize Firebase for Android.
+        firebase::App* app = firebase::App::Create(
+                firebase::AppOptions(), JniHelper::getEnv(), JniHelper::getActivity());
+        // Initialize AdMob.
+        firebase::admob::Initialize(*app, "INSERT_YOUR_ADMOB_ANDROID_APP_ID");
+    #elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+        // Initialize Firebase for iOS.
+      firebase::App* app = firebase::App::Create(firebase::AppOptions());
+      // Initialize AdMob.
+      firebase::admob::Initialize(*app, "INSERT_YOUR_ADMOB_IOS_APP_ID");
+    #endif
+        // Initialize AdMob.
+        firebase::admob::Initialize(*app);
 
     // create a scene. it's an autorelease object
     auto scene = TitleScene::createScene();

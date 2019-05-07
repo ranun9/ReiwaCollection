@@ -2,6 +2,7 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "firebase/admob/banner_view.h"
 
 class HelloWorld : public cocos2d::Layer
 {
@@ -23,6 +24,8 @@ public:
 
 	std::vector<std::string> nextNeedItems;
 	std::vector<std::string>::iterator it;
+
+	firebase::admob::BannerView* banner_view;
 
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);

@@ -2,3 +2,11 @@ include ':libcocos2dx'
 project(':libcocos2dx').projectDir = new File(settingsDir, '../cocos2d/cocos/platform/android/libcocos2dx')
 include ':ReiwaCollection'
 project(':ReiwaCollection').projectDir = new File(settingsDir, 'app')
+/*
+include ':firebase'
+project(':firebase').projectDir = new File(settingsDir, '../firebase_cpp_sdk/include')
+*/
+/*
+include(':Java')
+project(':Java').projectDir = new File(settingsDir, 'C:\\Program Files\\Java\\jdk-12.0.1\\include')
+*/

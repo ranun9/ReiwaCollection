@@ -29,7 +29,8 @@ LOCAL_SRC_FILES := $(LOCAL_PATH)/hellocpp/main.cpp \
                    $(LOCAL_PATH)/../../../Classes/AppDelegate.cpp \
                    $(LOCAL_PATH)/../../../Classes/HelloWorldScene.cpp \
                    $(LOCAL_PATH)/../../../Classes/Finished/FinishedScene.cpp \
-                   $(LOCAL_PATH)/../../../Classes/Title/TitleScene.cpp
+                   $(LOCAL_PATH)/../../../Classes/Title/TitleScene.cpp \
+                   $(LOCAL_PATH)/../../../Classes/FirebaseHelper.cpp
 
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/../../../Classes
 
