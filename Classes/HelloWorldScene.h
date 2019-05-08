@@ -22,7 +22,9 @@ public:
 	cocos2d::Vector<cocos2d::PhysicsBody*> ItemsPhysics;//std::vectorÇæÇ∆HelloWorld::updateÇ≈Ç ÇÈÇ€ÅH
 
 	std::vector<std::string> nextNeedItems;
-	std::vector<std::string>::iterator it;
+	std::vector<std::string>::iterator iteratorNextNeed;
+	std::vector<std::string> otherItems;
+	std::vector<std::string>::iterator iteratorOther;
 
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);

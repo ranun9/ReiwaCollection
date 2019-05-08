@@ -16,6 +16,9 @@
 #include "platform/android/jni/JniHelper.h"
 #endif
 
+#include "audio/include/SimpleAudioEngine.h"
+using namespace CocosDenshion;
+
 USING_NS_CC;
 
 Scene* HelloWorld::createScene()
@@ -90,7 +93,7 @@ bool HelloWorld::init()
 	playerPhysics->setContactTestBitmask(1);
 	playerPhysics->setName("Player");
 	player->addComponent(playerPhysics);
-	
+
 
 	//crate Items
 	Vector<Sprite*> Items;
@@ -100,7 +103,7 @@ bool HelloWorld::init()
 	nextNeedItems.push_back("れ");
 	nextNeedItems.push_back("い");
 	nextNeedItems.push_back("わ");
-	it = nextNeedItems.begin();
+	iteratorNextNeed = nextNeedItems.begin();
 	for (int i = 0; i < Items.size();i++) {
 		ItemsPhysics.pushBack(PhysicsBody::createBox(Size(50, 50), PhysicsMaterial(1e-4,1,0)));
 		ItemsPhysics.at(i)->setName(nextNeedItems.at(i));
@@ -109,6 +112,22 @@ bool HelloWorld::init()
 		this->addChild(Items.at(i));
 		Items.at(i)->addComponent(ItemsPhysics.at(i));
 	}
+
+	/*
+	 * カタカナも加えたかったがsetNameの都合上面倒臭そう
+	Vector<Sprite*> katakana;
+	nextNeedItems.push_back("レ");
+	otherItems.push_back("イ");
+	otherItems.push_back("ワ");
+	for (int i = 0; i < hiragana.size();i++) {
+		ItemsPhysics.pushBack(PhysicsBody::createBox(Size(50, 50), PhysicsMaterial(1e-4,1,0)));
+		ItemsPhysics.at(i)->setName(nextNeedItems.at(i));
+		ItemsPhysics.at(i)->setContactTestBitmask(1);
+		hiragana.at(i)->setPosition(Vec2(cocos2d::random<int>(0,visibleSize.width), cocos2d::random<int>(0,visibleSize.height)));
+		this->addChild(hiragana.at(i));
+		hiragana.at(i)->addComponent(ItemsPhysics.at(i));
+	}*/
+
 
 	this->scheduleUpdate();
 
@@ -150,17 +169,22 @@ void HelloWorld::initEvents()
 		auto bodyA = contact.getShapeA()->getBody();
 		auto bodyB = contact.getShapeB()->getBody();
 
-		if ("Player" == bodyA->getName() && *it == bodyB->getName())
+		if ("Player" == bodyA->getName() && *iteratorNextNeed == bodyB->getName())
 		{
 			bodyB->getNode()->removeFromParent();
-			it++;
-		} else if ("Player" == bodyB->getName() && *it == bodyA->getName())
+			iteratorNextNeed++;
+
+			auto audio = SimpleAudioEngine::getInstance();
+			audio->playEffect("Onmtp-Impact06-1.mp3", false, 1.0f, 1.0f, 1.0f);
+		} else if ("Player" == bodyB->getName() && *iteratorNextNeed == bodyA->getName())
 		{
 			bodyA->getNode()->removeFromParent();
-			it++;
+			iteratorNextNeed++;
+			auto audio = SimpleAudioEngine::getInstance();
+			audio->playEffect("Onmtp-Impact06-1.mp3", false, 1.0f, 1.0f, 1.0f);
 		}
 
-		if (it == nextNeedItems.end()) {
+		if (iteratorNextNeed == nextNeedItems.end()) {
 			Director::getInstance()->replaceScene(Finished::createScene());
 		}
 
