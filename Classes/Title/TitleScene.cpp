@@ -42,6 +42,14 @@ bool TitleScene::init() {
 	// add the label as a child to this layer
 	this->addChild(label, 1);
 
+	auto titleChar = Sprite::create("title.png");
+	titleChar->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+	this->addChild(titleChar);
+
+	auto touchHere = Label::createWithTTF("Touch Here", "fonts/Marker Felt.ttf", 24);
+    touchHere->setPosition(Vec2(visibleSize.width / 2,visibleSize.height/4));
+	this->addChild(touchHere, 1);
+
 	// General scene setup ...
 	#if defined(__ANDROID__)
 		// Android ad unit IDs.

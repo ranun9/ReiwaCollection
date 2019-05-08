@@ -23,5 +23,9 @@ bool Finished::init() {
 	// add the label as a child to this layer
 	this->addChild(label, 1);
 
+	auto bouquet = Sprite::create("bouquet_omedetou.png");
+	bouquet->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
+	this->addChild(bouquet);
+
 	return true;
 }

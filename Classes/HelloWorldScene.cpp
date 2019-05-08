@@ -102,10 +102,10 @@ bool HelloWorld::init()
 	nextNeedItems.push_back("‚í");
 	it = nextNeedItems.begin();
 	for (int i = 0; i < Items.size();i++) {
-		ItemsPhysics.pushBack(PhysicsBody::createBox(Size(110, 103), PhysicsMaterial(1e-4,1,0)));
+		ItemsPhysics.pushBack(PhysicsBody::createBox(Size(50, 50), PhysicsMaterial(1e-4,1,0)));
 		ItemsPhysics.at(i)->setName(nextNeedItems.at(i));
 		ItemsPhysics.at(i)->setContactTestBitmask(1);
-		Items.at(i)->setPosition(Vec2(random<int>(0,visibleSize.width), random<int>(0,visibleSize.height)));
+		Items.at(i)->setPosition(Vec2(cocos2d::random<int>(0,visibleSize.width), cocos2d::random<int>(0,visibleSize.height)));
 		this->addChild(Items.at(i));
 		Items.at(i)->addComponent(ItemsPhysics.at(i));
 	}
