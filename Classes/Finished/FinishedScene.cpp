@@ -27,5 +27,12 @@ bool Finished::init() {
 	bouquet->setPosition(Vec2(visibleSize.width / 2, visibleSize.height / 2));
 	this->addChild(bouquet);
 
+    auto OtoLogic = Label::createWithTTF("Audio Effect by OtoLogic", "fonts/Marker Felt.ttf", 24);
+    // position the label on the center of the screen
+    OtoLogic->setPosition(Vec2(origin.x + visibleSize.width / 2,
+                            visibleSize.height /4));
+    // add the label as a child to this layer
+    this->addChild(OtoLogic, 1);
+
 	return true;
 }
