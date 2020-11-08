@@ -1,5 +1,4 @@
 # ReiwaCollection
-インターンシップで作るゲーム
 
 windowsはproj.win32の↓から
 androidはproj.androidのから開く
